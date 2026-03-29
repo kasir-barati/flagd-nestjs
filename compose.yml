@@ -1,0 +1,40 @@
+services:
+  flagd-nestjs:
+    build: .
+    ports:
+      - '3000:3000' # NestJS REST API (flag management)
+      - '8013:8013' # flagd gRPC (flag evaluation for backends)
+      - '8016:8016' # flagd OFREP/HTTP (flag evaluation for frontends)
+      # Port 8014 (metrics/sync) is NOT exposed — internal only
+    environment:
+      PORT: 3000
+      SWAGGER_PATH: api
+      SERVICE_NAME: flagd-nestjs
+      DATABASE_ENGINE: postgres
+      DATABASE_URL: postgres://flagd:flagd@postgres:5432/flagd
+      FLAGD_HOST: localhost
+      FLAGD_PORT: 8013
+      LOG_MODE: pretty
+      LOG_LEVEL: debug
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: flagd
+      POSTGRES_PASSWORD: flagd
+      POSTGRES_DB: flagd
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U flagd']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:

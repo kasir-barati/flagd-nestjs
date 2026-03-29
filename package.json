@@ -1,0 +1,116 @@
+{
+  "name": "flagd-nestjs",
+  "version": "1.0.0",
+  "description": "A NestJS wrapper around flagd for feature flag management with persistent storage",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "nest build",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "start:debug": "nest start --debug --watch",
+    "start:prod": "node dist/main.js",
+    "lint": "eslint \"{src,test}/**/*.ts\" --fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:cov": "vitest run --coverage",
+    "test:e2e": "vitest run --config test/vitest.e2e.config.ts",
+    "prepare": "husky || true"
+  },
+  "keywords": [
+    "nestjs",
+    "flagd",
+    "openfeature",
+    "feature-flags"
+  ],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.28.2",
+  "devEngines": {
+    "node": {
+      "runtime": "node",
+      "version": ">=24.0.0",
+      "onFail": "error"
+    }
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "^1.14.3",
+    "@nestjs/common": "^11.1.17",
+    "@nestjs/config": "^4.0.3",
+    "@nestjs/core": "^11.1.17",
+    "@nestjs/platform-express": "^11.1.17",
+    "@nestjs/swagger": "^11.2.6",
+    "@nestjs/typeorm": "^11.0.0",
+    "@openfeature/flagd-provider": "^0.14.0",
+    "@openfeature/nestjs-sdk": "^0.2.5",
+    "@openfeature/server-sdk": "^1.20.2",
+    "better-sqlite3": "^12.8.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.15.1",
+    "mongodb": "^7.1.1",
+    "mssql": "^12.2.1",
+    "mysql2": "^3.20.0",
+    "nestjs-backend-common": "^1.6.0",
+    "nestjs-cls": "^6.2.0",
+    "pg": "^8.20.0",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
+    "typeorm": "^0.3.28"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@nestjs/cli": "^11.0.16",
+    "@nestjs/schematics": "^11.0.9",
+    "@nestjs/testing": "^11.1.17",
+    "@swc/cli": "^0.8.0",
+    "@swc/core": "^1.15.21",
+    "@testcontainers/postgresql": "^11.13.0",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/express": "^5.0.6",
+    "@types/mssql": "^9.1.11",
+    "@types/node": "^25.5.0",
+    "@vitest/coverage-v8": "^4.1.2",
+    "eslint": "^10.1.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import-x": "^4.16.2",
+    "eslint-plugin-perfectionist": "^5.7.0",
+    "eslint-plugin-prettier": "^5.5.5",
+    "husky": "^9.1.7",
+    "jest-extended": "^7.0.0",
+    "lint-prepush": "^3.0.3",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.8.1",
+    "testcontainers": "^11.13.0",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^6.0.2",
+    "typescript-eslint": "^8.57.2",
+    "unplugin-swc": "^1.5.9",
+    "vitest": "^4.1.2"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@nestjs/core",
+      "@scarf/scarf",
+      "@swc/core",
+      "better-sqlite3",
+      "cpu-features",
+      "protobufjs",
+      "ssh2"
+    ]
+  },
+  "lint-staged": {
+    "*": "prettier -w -u --no-error-on-unmatched-pattern",
+    "*.ts": "eslint --fix"
+  },
+  "lint-prepush": {
+    "tasks": {
+      "*": [
+        "prettier -w -u --no-error-on-unmatched-pattern"
+      ],
+      "*.ts": [
+        "eslint --fix"
+      ]
+    }
+  }
+}
