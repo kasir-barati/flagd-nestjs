@@ -1,52 +1,6 @@
-import {
-  PostgreSqlContainer,
-  type StartedPostgreSqlContainer,
-} from '@testcontainers/postgresql';
-import {
-  GenericContainer,
-  type StartedNetwork,
-  type StartedTestContainer,
-  Wait,
-} from 'testcontainers';
+import { GenericContainer, type StartedNetwork, Wait } from 'testcontainers';
 
-import type { DatabaseEngine } from '../../src/shared';
-
-export interface DatabaseOption {
-  engine: DatabaseEngine;
-  /** Connection URL the app should use (must use the container's network alias) */
-  databaseUrl: string;
-  /** The started DB container (stopped during cleanup) */
-  dbContainer: StartedTestContainer;
-}
-
-export interface AppContainers {
-  appContainer: StartedTestContainer;
-  dbContainer: StartedTestContainer;
-  network: StartedNetwork;
-  appBaseUrl: string;
-}
-
-export async function startPostgresContainer(
-  network: StartedNetwork,
-): Promise<DatabaseOption> {
-  const PG_NETWORK_ALIAS = 'postgres';
-
-  const pgContainer: StartedPostgreSqlContainer = await new PostgreSqlContainer(
-    'postgres:17-alpine',
-  )
-    .withDatabase('flagd')
-    .withUsername('flagd')
-    .withPassword('flagd')
-    .withNetwork(network)
-    .withNetworkAliases(PG_NETWORK_ALIAS)
-    .start();
-
-  return {
-    engine: 'postgres',
-    databaseUrl: `postgres://flagd:flagd@${PG_NETWORK_ALIAS}:5432/flagd`,
-    dbContainer: pgContainer,
-  };
-}
+import { AppContainers, DatabaseOption } from './shared-interfaces';
 
 export async function startAppContainers(
   dbOption: DatabaseOption,

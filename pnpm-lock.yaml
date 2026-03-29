@@ -92,6 +92,9 @@ importers:
       '@swc/core':
         specifier: ^1.15.21
         version: 1.15.21
+      '@testcontainers/mongodb':
+        specifier: ^11.13.0
+        version: 11.13.0
       '@testcontainers/postgresql':
         specifier: ^11.13.0
         version: 11.13.0
@@ -1811,6 +1814,12 @@ packages:
         integrity: sha512-GxlsW354Vi6QqbUgdPyQVcQjI7cZBdGV5vOYVYuCVDTylx2wl3WHR2HlhcxxHTrMigbelpXsdcZso+66uxPfow==,
       }
 
+  '@testcontainers/mongodb@11.13.0':
+    resolution:
+      {
+        integrity: sha512-+g5e1ZajYuOFEzsElwRlVGgkzghBt/dMi+QHIoQ8iCfjfehcpJ0K0+A7xHiedigxY4P1dTHS7FTdKFwBdvdZrQ==,
+      }
+
   '@testcontainers/postgresql@11.13.0':
     resolution:
       {
@@ -3464,6 +3473,12 @@ packages:
         integrity: sha512-ObxuY6vnbWTN6Od72xfwN9DbzC7Y2vv8u1Soi9ahRKL37gb6y1qk6/dgjs+3JWuXJHWvsg3BXIwzd/rkmAwavg==,
       }
     engines: { node: '>= 12.0.0' }
+
+  compare-versions@6.1.1:
+    resolution:
+      {
+        integrity: sha512-4hm4VPpIecmlg59CHXnRDnqGplJFrbLG4aFEl5vl6cK1u76ws3LLvX7ikFnTDl5vo39sjWD6AaDPYodJp/NNHg==,
+      }
 
   compress-commons@6.0.2:
     resolution:
@@ -9160,6 +9175,16 @@ snapshots:
 
   '@tediousjs/connection-string@0.6.0': {}
 
+  '@testcontainers/mongodb@11.13.0':
+    dependencies:
+      compare-versions: 6.1.1
+      testcontainers: 11.13.0
+    transitivePeerDependencies:
+      - bare-abort-controller
+      - bare-buffer
+      - react-native-b4a
+      - supports-color
+
   '@testcontainers/postgresql@11.13.0':
     dependencies:
       testcontainers: 11.13.0
@@ -10213,6 +10238,8 @@ snapshots:
       esprima: 4.0.1
 
   comment-parser@1.4.6: {}
+
+  compare-versions@6.1.1: {}
 
   compress-commons@6.0.2:
     dependencies:

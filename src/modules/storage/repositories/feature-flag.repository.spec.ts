@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import { Repository } from 'typeorm';
 
 import { FeatureFlagEntity } from '../entities';
@@ -72,10 +73,10 @@ describe(FeatureFlagRepository.name, () => {
       } as any);
       vi.mocked(repository.findOneBy).mockResolvedValue(null);
 
-      await mongoRepo.findById('mongo-id-123');
+      await mongoRepo.findById('aabbccddeeff00112233aabb');
 
       expect(repository.findOneBy).toHaveBeenCalledWith({
-        _id: 'mongo-id-123',
+        _id: ObjectId.createFromHexString('aabbccddeeff00112233aabb'),
       });
     });
 
@@ -184,10 +185,10 @@ describe(FeatureFlagRepository.name, () => {
       } as any);
       vi.mocked(repository.delete).mockResolvedValue({ affected: 1 } as any);
 
-      await mongoRepo.delete('mongo-id-123');
+      await mongoRepo.delete('aabbccddeeff00112233aabb');
 
       expect(repository.delete).toHaveBeenCalledWith({
-        _id: 'mongo-id-123',
+        _id: ObjectId.createFromHexString('aabbccddeeff00112233aabb'),
       });
     });
   });

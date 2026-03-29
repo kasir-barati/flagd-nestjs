@@ -1,7 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ObjectId } from 'mongodb';
 import { Repository } from 'typeorm';
 
+import { appConfigs } from '../../../app/configs';
 import { transformToId } from '../../../shared';
 import { FeatureFlagEntity } from '../entities';
 import type {
@@ -13,10 +16,20 @@ import type {
 
 @Injectable()
 export class FeatureFlagRepository implements IFeatureFlagRepository {
+  private readonly isMongo: boolean;
+
   constructor(
     @InjectRepository(FeatureFlagEntity)
     private readonly repository: Repository<FeatureFlagEntity>,
-  ) {}
+    @Inject(appConfigs.KEY)
+    appConfig: ConfigType<typeof appConfigs>,
+  ) {
+    this.isMongo = appConfig.DATABASE_ENGINE === 'mongodb';
+  }
+
+  private idWhereClause(id: string): Record<string, unknown> {
+    return this.isMongo ? { _id: ObjectId.createFromHexString(id) } : { id };
+  }
 
   async findAll(): Promise<IFeatureFlag[]> {
     const entities = await this.repository.find();
@@ -25,7 +38,7 @@ export class FeatureFlagRepository implements IFeatureFlagRepository {
   }
 
   async findById(id: string): Promise<IFeatureFlag | null> {
-    const entity = await this.repository.findOneBy({ id });
+    const entity = await this.repository.findOneBy(this.idWhereClause(id));
 
     return entity ? this.toFeatureFlag(entity) : null;
   }
@@ -47,7 +60,7 @@ export class FeatureFlagRepository implements IFeatureFlagRepository {
     id: string,
     data: IUpdateFeatureFlag,
   ): Promise<IFeatureFlag | null> {
-    const entity = await this.repository.findOneBy({ id });
+    const entity = await this.repository.findOneBy(this.idWhereClause(id));
 
     if (!entity) {
       return null;
@@ -60,7 +73,7 @@ export class FeatureFlagRepository implements IFeatureFlagRepository {
   }
 
   async delete(id: string): Promise<boolean> {
-    const result = await this.repository.delete({ id });
+    const result = await this.repository.delete(this.idWhereClause(id));
 
     return (result.affected ?? 0) > 0;
   }

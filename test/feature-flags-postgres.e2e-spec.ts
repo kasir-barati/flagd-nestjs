@@ -7,7 +7,7 @@ import {
   stopAppContainers,
 } from './utils';
 
-describe('Feature Flags E2E', () => {
+describe('Feature Flags E2E (PostgreSQL)', () => {
   let containers: AppContainers;
   let baseUrl: string;
 
