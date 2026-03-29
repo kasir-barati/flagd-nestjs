@@ -42,7 +42,6 @@ jobs:
             --package semantic-release@24.2.9 \
             --package @semantic-release/commit-analyzer@13.0.1 \
             --package @semantic-release/release-notes-generator@14.1.0 \
-            --package @semantic-release/npm \
             --package @semantic-release/git \
             --package @semantic-release/exec@7.1.0 \
             --package @semantic-release/github@11.0.6 \
