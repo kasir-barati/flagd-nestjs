@@ -31,11 +31,6 @@
       "name": "node",
       "version": ">=24.0.0 <25.0.0",
       "onFail": "error"
-    },
-    "packageManager": {
-      "name": "pnpm",
-      "version": ">=10.28.2 <11.0.0",
-      "onFail": "error"
     }
   },
   "dependencies": {
