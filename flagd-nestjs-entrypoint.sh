@@ -15,12 +15,11 @@ until curl -so /dev/null -w '' "http://localhost:${PORT}/flagd/flags.json" 2>/de
   fi
   sleep 1
 done
-echo "NestJS is ready."
 
 # Start flagd — syncs flag definitions from the NestJS REST API
 flagd start \
   --port 8013 \
-  --metrics-port 8014 \
+  --management-port 8014 \
   --ofrep-port 8016 \
   --uri "http://localhost:${PORT}/flagd/flags.json" &
 FLAGD_PID=$!

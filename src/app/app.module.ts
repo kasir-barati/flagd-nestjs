@@ -5,6 +5,7 @@ import { CorrelationIdModule, LoggerModule } from 'nestjs-backend-common';
 import { ClsModule } from 'nestjs-cls';
 
 import { StorageModule } from '../modules';
+import { AppController } from './app.controller';
 import {
   appConfigs,
   DatabaseModuleConfig,
@@ -34,5 +35,6 @@ import {
     }),
     StorageModule,
   ],
+  controllers: [AppController],
 })
 export class AppModule {}

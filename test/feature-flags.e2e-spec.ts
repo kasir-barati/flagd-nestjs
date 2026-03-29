@@ -1,6 +1,9 @@
+import { Network } from 'testcontainers';
+
 import {
   type AppContainers,
   startAppContainers,
+  startPostgresContainer,
   stopAppContainers,
 } from './utils';
 
@@ -9,7 +12,9 @@ describe('Feature Flags E2E', () => {
   let baseUrl: string;
 
   beforeAll(async () => {
-    containers = await startAppContainers();
+    const network = await new Network().start();
+    const dbOption = await startPostgresContainer(network);
+    containers = await startAppContainers(dbOption, network);
     baseUrl = containers.appBaseUrl;
   });
 
