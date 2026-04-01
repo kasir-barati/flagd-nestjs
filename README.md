@@ -54,22 +54,3 @@ A NestJS wrapper around [flagd](https://flagd.dev/) for feature flag management 
 | `DATABASE_URL`    | Database connection string (or file path for SQLite)         | `postgres://flagd:flagd@postgres:5432/flagd` |
 | `LOG_MODE`        | `PLAIN_TEXT` or `JSON`                                       | `PLAIN_TEXT`                                 |
 | `LOG_LEVEL`       | `error`, `warn`, `info`, `http`, `verbose`, `debug`, `silly` | `debug`                                      |
-
-## Project Structure
-
-```
-src/
-├── main.ts                         # Application bootstrap
-├── app/
-│   ├── app.module.ts               # Root module
-│   ├── app.controller.ts           # Health check
-│   └── configs/                    # App, database, and logger configuration
-└── modules/
-    └── storage/
-        ├── controllers/            # REST + flagd sync controllers
-        ├── dtos/                   # Request/response DTOs
-        ├── entities/               # TypeORM entity
-        ├── interfaces/             # Repository & model contracts
-        ├── repositories/           # Database access layer
-        └── services/               # Business logic & flag sync builder
-```

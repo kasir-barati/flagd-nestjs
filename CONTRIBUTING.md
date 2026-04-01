@@ -10,6 +10,25 @@ docker compose up --build -d
 
 Once the server is running, visit the Swagger UI: http://localhost:3000/api
 
+## Project Structure
+
+```
+src/
+├── main.ts                         # Application bootstrap
+├── app/
+│   ├── app.module.ts               # Root module
+│   ├── app.controller.ts           # Health check
+│   └── configs/                    # App, database, and logger configuration
+└── modules/
+    └── storage/
+        ├── controllers/            # REST + flagd sync controllers
+        ├── dtos/                   # Request/response DTOs
+        ├── entities/               # TypeORM entity
+        ├── interfaces/             # Repository & model contracts
+        ├── repositories/           # Database access layer
+        └── services/               # Business logic & flag sync builder
+```
+
 # Bump Version
 
 To release a new version your [commit message should follow these rules](https://github.com/semantic-release/semantic-release?tab=readme-ov-file#commit-message-format) which is the default behavior of `semantic-release`.
