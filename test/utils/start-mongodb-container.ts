@@ -10,7 +10,6 @@ export async function startMongoContainer(
   network: StartedNetwork,
 ): Promise<DatabaseOption> {
   const MONGO_NETWORK_ALIAS = 'mongodb';
-
   const mongoContainer: StartedMongoDBContainer = await new MongoDBContainer(
     'mongo:7',
   )

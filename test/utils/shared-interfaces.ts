@@ -15,4 +15,16 @@ export interface AppContainers {
   dbContainer: StartedTestContainer;
   network: StartedNetwork;
   appBaseUrl: string;
+  /**
+   * @description used by the OpenFeature SDK (`FlagdProvider`) for in-process flag evaluation via gRPC streaming
+   *
+   * @example 8013
+   */
+  flagdGrpcPort: number;
+  /**
+   * @description OFREP stands for OpenFeature Remote Evaluation Protocol.
+   *
+   * Standardized HTTP API specification defined by the [OpenFeature](https://openfeature.dev/) project to evaluate feature flags over HTTP/REST.
+   */
+  flagdOfrepBaseUrl: string;
 }

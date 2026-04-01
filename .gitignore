@@ -23,5 +23,8 @@ pnpm-debug.log*
 # coverage
 coverage/
 
+# e2e test container logs
+test/logs/
+
 # misc
 *.tsbuildinfo

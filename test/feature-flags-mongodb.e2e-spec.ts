@@ -9,22 +9,20 @@ import {
 
 describe('Feature Flags E2E (MongoDB)', () => {
   let containers: AppContainers;
-  let baseUrl: string;
 
   beforeAll(async () => {
     const network = await new Network().start();
     const dbOption = await startMongoContainer(network);
     containers = await startAppContainers(dbOption, network);
-    baseUrl = containers.appBaseUrl;
   });
 
   afterAll(async () => {
-    await stopAppContainers(containers);
+    await stopAppContainers('feature-flags-mongodb', containers);
   });
 
   describe('POST /feature-flags', () => {
     it('should create a feature flag', async () => {
-      const response = await fetch(`${baseUrl}/feature-flags`, {
+      const response = await fetch(`${containers.appBaseUrl}/feature-flags`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -46,7 +44,7 @@ describe('Feature Flags E2E (MongoDB)', () => {
     });
 
     it('should return 409 when creating a flag with a duplicate key', async () => {
-      const response = await fetch(`${baseUrl}/feature-flags`, {
+      const response = await fetch(`${containers.appBaseUrl}/feature-flags`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -64,24 +62,28 @@ describe('Feature Flags E2E (MongoDB)', () => {
 
   describe('GET /feature-flags', () => {
     it('should return all feature flags', async () => {
-      const response = await fetch(`${baseUrl}/feature-flags`);
+      const response = await fetch(`${containers.appBaseUrl}/feature-flags`);
 
       expect(response.status).toBe(200);
 
       const body = await response.json();
 
-      expect(Array.isArray(body)).toBe(true);
+      expect(Array.isArray(body)).toBeTrue();
       expect(body.length).toBeGreaterThanOrEqual(1);
     });
   });
 
   describe('GET /feature-flags/:id', () => {
     it('should return a specific feature flag by id', async () => {
-      const listResponse = await fetch(`${baseUrl}/feature-flags`);
+      const listResponse = await fetch(
+        `${containers.appBaseUrl}/feature-flags`,
+      );
       const flags = await listResponse.json();
       const flagId = flags[0].id as string;
 
-      const response = await fetch(`${baseUrl}/feature-flags/${flagId}`);
+      const response = await fetch(
+        `${containers.appBaseUrl}/feature-flags/${flagId}`,
+      );
 
       expect(response.status).toBe(200);
 
@@ -92,7 +94,7 @@ describe('Feature Flags E2E (MongoDB)', () => {
 
     it('should return 404 for non-existent flag', async () => {
       const response = await fetch(
-        `${baseUrl}/feature-flags/000000000000000000000000`,
+        `${containers.appBaseUrl}/feature-flags/000000000000000000000000`,
       );
 
       expect(response.status).toBe(404);
@@ -101,15 +103,20 @@ describe('Feature Flags E2E (MongoDB)', () => {
 
   describe('PATCH /feature-flags/:id', () => {
     it('should update a feature flag', async () => {
-      const listResponse = await fetch(`${baseUrl}/feature-flags`);
+      const listResponse = await fetch(
+        `${containers.appBaseUrl}/feature-flags`,
+      );
       const flags = await listResponse.json();
       const flagId = flags[0].id as string;
 
-      const response = await fetch(`${baseUrl}/feature-flags/${flagId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ enabled: false }),
-      });
+      const response = await fetch(
+        `${containers.appBaseUrl}/feature-flags/${flagId}`,
+        {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ enabled: false }),
+        },
+      );
 
       expect(response.status).toBe(200);
 
@@ -122,7 +129,7 @@ describe('Feature Flags E2E (MongoDB)', () => {
   describe('GET /flagd/flags.json (sync endpoint)', () => {
     it('should return valid flagd configuration with existing flags', async () => {
       // Arrange — create a flag first
-      await fetch(`${baseUrl}/feature-flags`, {
+      await fetch(`${containers.appBaseUrl}/feature-flags`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -134,7 +141,7 @@ describe('Feature Flags E2E (MongoDB)', () => {
         }),
       });
 
-      const response = await fetch(`${baseUrl}/flagd/flags.json`);
+      const response = await fetch(`${containers.appBaseUrl}/flagd/flags.json`);
 
       expect(response.status).toBe(200);
 
@@ -155,16 +162,18 @@ describe('Feature Flags E2E (MongoDB)', () => {
 
     it('should return empty flags object when no flags exist', async () => {
       // Arrange — delete all flags
-      const listResponse = await fetch(`${baseUrl}/feature-flags`);
+      const listResponse = await fetch(
+        `${containers.appBaseUrl}/feature-flags`,
+      );
       const flags = await listResponse.json();
 
       for (const flag of flags) {
-        await fetch(`${baseUrl}/feature-flags/${flag.id}`, {
+        await fetch(`${containers.appBaseUrl}/feature-flags/${flag.id}`, {
           method: 'DELETE',
         });
       }
 
-      const response = await fetch(`${baseUrl}/flagd/flags.json`);
+      const response = await fetch(`${containers.appBaseUrl}/flagd/flags.json`);
 
       expect(response.status).toBe(200);
 
@@ -177,29 +186,35 @@ describe('Feature Flags E2E (MongoDB)', () => {
   describe('DELETE /feature-flags/:id', () => {
     it('should delete a feature flag', async () => {
       // Arrange — create a flag to delete
-      const createResponse = await fetch(`${baseUrl}/feature-flags`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          flagKey: 'delete-test-flag',
-          enabled: true,
-          variants: { on: true },
-          defaultVariant: 'on',
-          targeting: {},
-        }),
-      });
+      const createResponse = await fetch(
+        `${containers.appBaseUrl}/feature-flags`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            flagKey: 'delete-test-flag',
+            enabled: true,
+            variants: { on: true },
+            defaultVariant: 'on',
+            targeting: {},
+          }),
+        },
+      );
       const created = await createResponse.json();
 
-      const response = await fetch(`${baseUrl}/feature-flags/${created.id}`, {
-        method: 'DELETE',
-      });
+      const response = await fetch(
+        `${containers.appBaseUrl}/feature-flags/${created.id}`,
+        {
+          method: 'DELETE',
+        },
+      );
 
       expect(response.status).toBe(204);
     });
 
     it('should return 404 when deleting a non-existent flag', async () => {
       const response = await fetch(
-        `${baseUrl}/feature-flags/000000000000000000000000`,
+        `${containers.appBaseUrl}/feature-flags/000000000000000000000000`,
         { method: 'DELETE' },
       );
 

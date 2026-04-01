@@ -166,7 +166,7 @@ describe(FeatureFlagRepository.name, () => {
 
       const result = await uut.delete('uuid-1');
 
-      expect(result).toBe(true);
+      expect(result).toBeTrue();
       expect(repository.delete).toHaveBeenCalledWith({ id: 'uuid-1' });
     });
 
@@ -175,7 +175,7 @@ describe(FeatureFlagRepository.name, () => {
 
       const result = await uut.delete('non-existent');
 
-      expect(result).toBe(false);
+      expect(result).toBeFalse();
     });
 
     it('should use _id for MongoDB', async () => {

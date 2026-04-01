@@ -1,5 +1,6 @@
 import { GenericContainer, type StartedNetwork, Wait } from 'testcontainers';
 
+import { saveContainerLogs } from './save-container-logs';
 import { AppContainers, DatabaseOption } from './shared-interfaces';
 
 export async function startAppContainers(
@@ -30,19 +31,42 @@ export async function startAppContainers(
 
   const appPort = startedApp.getMappedPort(port);
   const appBaseUrl = `http://${startedApp.getHost()}:${String(appPort)}`;
+  const flagdGrpcPort = startedApp.getMappedPort(8013);
+  const flagdOfrepPort = startedApp.getMappedPort(8016);
+  const flagdOfrepBaseUrl = `http://${startedApp.getHost()}:${String(flagdOfrepPort)}`;
 
   return {
     appContainer: startedApp,
     dbContainer: dbOption.dbContainer,
     network,
     appBaseUrl,
+    flagdGrpcPort,
+    flagdOfrepBaseUrl,
   };
 }
 
 export async function stopAppContainers(
-  containers: AppContainers,
+  suiteName: string,
+  containers?: AppContainers,
 ): Promise<void> {
-  await containers.appContainer.stop();
-  await containers.dbContainer.stop();
-  await containers.network.stop();
+  await saveContainerLogs(suiteName, 'app', containers?.appContainer);
+  await saveContainerLogs(suiteName, 'db', containers?.dbContainer);
+
+  if (containers?.appContainer) {
+    await containers.appContainer.stop().catch((err: unknown) => {
+      console.error(`Failed to stop app container (${suiteName}):`, err);
+    });
+  }
+
+  if (containers?.dbContainer) {
+    await containers.dbContainer.stop().catch((err: unknown) => {
+      console.error(`Failed to stop db container (${suiteName}):`, err);
+    });
+  }
+
+  if (containers?.network) {
+    await containers.network.stop().catch((err: unknown) => {
+      console.error(`Failed to stop network (${suiteName}):`, err);
+    });
+  }
 }
