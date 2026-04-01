@@ -1,3 +1,15 @@
+# Getting Started
+
+```bash
+git clone git@github.com:kasir-barati/flagd-nestjs.git
+cd flagd-nestjs
+cp .env.example .env
+pnpm install
+docker compose up --build -d
+```
+
+Once the server is running, visit the Swagger UI: http://localhost:3000/api
+
 # Bump Version
 
 To release a new version your [commit message should follow these rules](https://github.com/semantic-release/semantic-release?tab=readme-ov-file#commit-message-format) which is the default behavior of `semantic-release`.
@@ -31,14 +43,14 @@ For each release, the workflow builds from `Dockerfile` and pushes:
 - `9109679196/flagd-nestjs:<semantic-version>`
 - `9109679196/flagd-nestjs:latest`
 
-## Testing
+# Testing
 
 ```bash
 pnpm test
 pnpm test:e2e
 ```
 
-### Testing Conventions
+## Testing Conventions
 
 - If you change/add something make sure to write/update and then run the unit/e2e tests.
 - Use vitest.
@@ -55,7 +67,7 @@ pnpm test:e2e
 - For e2e tests use testcotnainers and the `Dockerfile` we have to stay as close as possible to the prod state.
 - Feel free to add fixtures for stuff like building a docker image from my repo so our e2e tests is not bloated.
 
-### Unit Test Example
+## Unit Test Example
 
 ```ts
 import { Model } from 'mongoose';
